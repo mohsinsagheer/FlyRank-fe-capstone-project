@@ -1,0 +1,63 @@
+/* Zenith E-Commerce Design System & Design Tokens */
+:root {
+  /* Permanent Premium Light Theme Default */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --bg-glass: rgba(255, 255, 255, 0.92);
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+  
+  /* Navbar & Footer Executive Navy Blue Theme Colors */
+  --nav-bg: #001f3f; /* Deep Classic Navy Blue */
+  --nav-text-primary: #ffffff;
+  --nav-text-secondary: #cbd5e1;
+  --nav-border: rgba(255, 255, 255, 0.18);
+
+  --footer-bg: #001f3f; /* Deep Classic Navy Blue */
+  --footer-text-primary: #ffffff;
+  --footer-text-secondary: #cbd5e1;
+  --footer-border: rgba(255, 255, 255, 0.18);
+  
+  /* Brand Accent Colors */
+  --brand-primary: #2563eb; /* Royal Blue */
+  --brand-primary-hover: #1d4ed8;
+  --brand-secondary: #0284c7; /* Cyan / Blue */
+  --brand-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #ec4899 100%);
+  --brand-gradient-gold: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --brand-accent: #ec4899;
+  
+  /* Status Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  
+  /* Borders & Shadows */
+  --border-color: #cbd5e1;
+  --border-color-light: #e2e8f0;
+  --border-glow: rgba(37, 99, 235, 0.3);
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.2);
+  
+  /* Layout & Spacing */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
