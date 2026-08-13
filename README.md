@@ -1,4 +1,4 @@
-# Zenith E-Commerce Platform (AI-Enhanced Capstone)
+# MOHSIN E-Commerce Platform (AI-Enhanced Capstone)
 
 A production-ready, highly polished e-commerce platform built with **React 19**, **TypeScript**, **Vite 8**, and powered by **Anthropic Claude AI (3.5 Sonnet / 3.6)** via a secure Node.js Express server.
 
