@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { User, AuthResponse } from '../models/Auth';
 
 const API_BASE_URL = 'http://localhost:3001/api/auth';
@@ -51,7 +51,7 @@ export function useAuthViewModel() {
         body: JSON.stringify({ name, email, password })
       });
       const data: AuthResponse = await response.json();
-      
+
       if (data.success && data.token && data.user) {
         persistSession(data.token, data.user);
         return true;
@@ -77,7 +77,7 @@ export function useAuthViewModel() {
         body: JSON.stringify({ email, password })
       });
       const data: AuthResponse = await response.json();
-      
+
       if (data.success && data.token && data.user) {
         persistSession(data.token, data.user);
         return true;
@@ -103,7 +103,7 @@ export function useAuthViewModel() {
         body: JSON.stringify({ email, newPassword })
       });
       const data: AuthResponse = await response.json();
-      
+
       if (data.success) {
         return true;
       } else {
