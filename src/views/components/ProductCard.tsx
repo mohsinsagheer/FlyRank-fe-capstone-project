@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Product } from '../../models/Product';
-import { Heart, ShoppingCart, Eye, Star } from 'lucide-react';
+import { Heart, ShoppingCart, Eye, Star, Layers } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -8,6 +8,8 @@ interface ProductCardProps {
   onToggleWishlist: (product: Product) => void;
   onAddToCart: (product: Product) => void;
   onQuickView: (product: Product) => void;
+  isCompared?: boolean;
+  onToggleCompare?: (product: Product) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -15,7 +17,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isInWishlist,
   onToggleWishlist,
   onAddToCart,
-  onQuickView
+  onQuickView,
+  isCompared,
+  onToggleCompare
 }) => {
   return (
     <div
@@ -68,33 +72,55 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
 
-        {/* Wishlist Heart Toggle */}
-        <button
-          onClick={() => onToggleWishlist(product)}
-          style={{
-            position: 'absolute',
-            top: '0.75rem',
-            right: '0.75rem',
-            background: 'rgba(18, 24, 36, 0.75)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '50%',
-            width: '36px',
-            height: '36px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'transform var(--transition-fast)'
-          }}
-          title={isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-        >
-          <Heart
-            size={18}
-            color="var(--brand-accent)"
-            fill={isInWishlist ? 'var(--brand-accent)' : 'none'}
-          />
-        </button>
+        {/* Compare & Wishlist Toggles */}
+        <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', display: 'flex', gap: '0.35rem' }}>
+          {onToggleCompare && (
+            <button
+              onClick={() => onToggleCompare(product)}
+              style={{
+                background: isCompared ? 'var(--brand-primary)' : 'rgba(18, 24, 36, 0.75)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'transform var(--transition-fast)',
+                color: isCompared ? '#ffffff' : 'var(--text-secondary)'
+              }}
+              title={isCompared ? 'Remove from Compare' : 'Add to Compare'}
+            >
+              <Layers size={16} />
+            </button>
+          )}
+
+          <button
+            onClick={() => onToggleWishlist(product)}
+            style={{
+              background: 'rgba(18, 24, 36, 0.75)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '50%',
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'transform var(--transition-fast)'
+            }}
+            title={isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+          >
+            <Heart
+              size={18}
+              color="var(--brand-accent)"
+              fill={isInWishlist ? 'var(--brand-accent)' : 'none'}
+            />
+          </button>
+        </div>
 
         {/* Quick View Button Hover Overlay */}
         <button

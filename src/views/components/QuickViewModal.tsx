@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { Product } from '../../models/Product';
+import type { AIReviewSummary as SummaryType } from '../../models/AI';
 import { X, Star, ShoppingCart, Heart, ShieldCheck, Truck, RefreshCw } from 'lucide-react';
+import { AIReviewSummary } from './AIReviewSummary';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -8,6 +10,9 @@ interface QuickViewModalProps {
   onAddToCart: (product: Product, quantity: number) => void;
   onToggleWishlist: (product: Product) => void;
   isInWishlist: boolean;
+  aiReviewSummary?: SummaryType | null;
+  isAiReviewLoading?: boolean;
+  onFetchAIReview?: (product: Product) => void;
 }
 
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({
@@ -15,7 +20,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   onClose,
   onAddToCart,
   onToggleWishlist,
-  isInWishlist
+  isInWishlist,
+  aiReviewSummary,
+  isAiReviewLoading = false,
+  onFetchAIReview
 }) => {
   const [quantity, setQuantity] = useState(1);
 
@@ -179,6 +187,16 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           </div>
 
         </div>
+
+        {/* AI Review Summary Section */}
+        {onFetchAIReview && (
+          <AIReviewSummary
+            product={product}
+            summary={aiReviewSummary || null}
+            isLoading={isAiReviewLoading}
+            onFetch={onFetchAIReview}
+          />
+        )}
       </div>
     </div>
   );

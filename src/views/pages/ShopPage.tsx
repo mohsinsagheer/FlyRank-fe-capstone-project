@@ -1,8 +1,10 @@
 import React from 'react';
 import { ProductCard } from '../components/ProductCard';
 import { QuickViewModal } from '../components/QuickViewModal';
+import { AISearchBar } from '../components/AISearchBar';
 import type { Product, ProductCategory } from '../../models/Product';
 import type { SortOption } from '../../viewmodels/useShopViewModel';
+import type { AISearchRequirement, AIReviewSummary } from '../../models/AI';
 import { RotateCcw, SlidersHorizontal, Grid } from 'lucide-react';
 
 interface ShopPageProps {
@@ -25,6 +27,22 @@ interface ShopPageProps {
   isInWishlist: (id: string) => boolean;
   onToggleWishlist: (p: Product) => void;
   onAddToCart: (p: Product, qty?: number) => void;
+  // AI Search Props
+  aiNlQuery: string;
+  onAiNlQueryChange: (val: string) => void;
+  onExecuteAiSearch: (custom?: string) => void;
+  onClearAiSearch: () => void;
+  isAiSearching: boolean;
+  aiRequirements: AISearchRequirement | null;
+  isAiSearchActive: boolean;
+  aiErrorMsg: string | null;
+  // AI Compare Props
+  isProductSelectedForCompare: (id: string) => boolean;
+  onToggleCompare: (p: Product) => void;
+  // AI Review Summary Props
+  aiReviewSummary?: AIReviewSummary | null;
+  isAiReviewLoading?: boolean;
+  onFetchAIReview?: (p: Product) => void;
 }
 
 export const ShopPage: React.FC<ShopPageProps> = ({
@@ -46,30 +64,55 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   onSetQuickViewProduct,
   isInWishlist,
   onToggleWishlist,
-  onAddToCart
+  onAddToCart,
+  aiNlQuery,
+  onAiNlQueryChange,
+  onExecuteAiSearch,
+  onClearAiSearch,
+  isAiSearching,
+  aiRequirements,
+  isAiSearchActive,
+  aiErrorMsg,
+  isProductSelectedForCompare,
+  onToggleCompare,
+  aiReviewSummary,
+  isAiReviewLoading,
+  onFetchAIReview
 }) => {
   return (
     <div className="shoppage-container animate-fade-in">
       <div className="container" style={{ padding: '2rem 1.5rem' }}>
-        
+
         {/* Shop Page Banner Header */}
         <div
           className="glass-panel"
           style={{
-            padding: '2rem 2.5rem',
-            borderRadius: 'var(--radius-lg)',
-            marginBottom: '2.5rem',
+            padding: '1rem 1.5rem',
+            borderRadius: 'var(--radius-md)',
+            marginBottom: '1rem',
             background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.1) 100%)',
             border: '1px solid var(--border-color-light)'
           }}
         >
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.25rem', marginLeft: '0.25rem' }}>
             Product Catalog & Shop
           </h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '700px' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', maxWidth: '700px', margin: 0, marginLeft: '12rem' }}>
             Discover our full line of electronics, laptops, tactical boots, bluetooth audio devices, hair grooming clippers/dryers, and professional sports equipment.
           </p>
         </div>
+
+        {/* AI Natural Language Search Bar */}
+        <AISearchBar
+          query={aiNlQuery}
+          onQueryChange={onAiNlQueryChange}
+          onSearch={onExecuteAiSearch}
+          onClear={onClearAiSearch}
+          isSearching={isAiSearching}
+          requirements={aiRequirements}
+          isActive={isAiSearchActive}
+          errorMsg={aiErrorMsg}
+        />
 
         {/* Category Pills Selector Bar */}
         <div
@@ -110,7 +153,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 
         {/* Main Grid & Filters Layout */}
         <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '2rem', alignItems: 'start' }}>
-          
+
           {/* Left Sidebar Filters Panel */}
           <aside className="glass-panel" style={{ padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
@@ -196,7 +239,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 
           {/* Right Product Grid Area */}
           <div>
-            
+
             {/* Top Toolbar: Total items count + Sort selector */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
@@ -259,6 +302,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                     onToggleWishlist={onToggleWishlist}
                     onAddToCart={onAddToCart}
                     onQuickView={onSetQuickViewProduct}
+                    isCompared={isProductSelectedForCompare(product.id)}
+                    onToggleCompare={onToggleCompare}
                   />
                 ))}
               </div>
@@ -275,6 +320,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           onAddToCart={onAddToCart}
           onToggleWishlist={onToggleWishlist}
           isInWishlist={quickViewProduct ? isInWishlist(quickViewProduct.id) : false}
+          aiReviewSummary={aiReviewSummary}
+          isAiReviewLoading={isAiReviewLoading}
+          onFetchAIReview={onFetchAIReview}
         />
 
       </div>

@@ -5,14 +5,23 @@ import { Footer } from '../components/Footer';
 import { CartDrawer } from '../components/CartDrawer';
 import { WishlistDrawer } from '../components/WishlistDrawer';
 import { NotificationToast } from '../components/NotificationToast';
+import { CompareFloatingBar } from '../components/CompareFloatingBar';
+import { AICompareModal } from '../components/AICompareModal';
+import { AuthModal } from '../components/AuthModal';
 
-import { useThemeViewModel } from '../../viewmodels/useThemeViewModel';
+import { useThemeViewModel, type PageView } from '../../viewmodels/useThemeViewModel';
 import { useHomeViewModel } from '../../viewmodels/useHomeViewModel';
 import { useShopViewModel } from '../../viewmodels/useShopViewModel';
 import { useCartViewModel } from '../../viewmodels/useCartViewModel';
 import { useWishlistViewModel } from '../../viewmodels/useWishlistViewModel';
 import { useOrderTrackingViewModel } from '../../viewmodels/useOrderTrackingViewModel';
 import { usePolicyViewModel } from '../../viewmodels/usePolicyViewModel';
+import { useAuthViewModel } from '../../viewmodels/useAuthViewModel';
+
+import { useAISearchViewModel } from '../../viewmodels/useAISearchViewModel';
+import { useAICompareViewModel } from '../../viewmodels/useAICompareViewModel';
+import { useAIReviewViewModel } from '../../viewmodels/useAIReviewViewModel';
+import { MOCK_PRODUCTS } from '../../models/mockData';
 
 import { HomePage } from '../pages/HomePage';
 import { ShopPage } from '../pages/ShopPage';
@@ -21,38 +30,83 @@ import { PolicyPage } from '../pages/PolicyPage';
 
 export const MainLayout: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const showToast = (msg: string) => setToastMessage(msg);
 
-  // ViewModels instantiation
+  // Core ViewModels
+  const authVM = useAuthViewModel();
   const themeVM = useThemeViewModel();
   const homeVM = useHomeViewModel();
-  const shopVM = useShopViewModel(themeVM.searchQuery);
+  
+  // AI ViewModels
+  const aiSearchVM = useAISearchViewModel(MOCK_PRODUCTS);
+  const aiCompareVM = useAICompareViewModel(showToast);
+  const aiReviewVM = useAIReviewViewModel();
+
+  // Shop ViewModel bound with AI matched product IDs
+  const shopVM = useShopViewModel(
+    themeVM.searchQuery,
+    aiSearchVM.isAiSearchActive ? aiSearchVM.aiMatchedProducts.map(p => p.id) : undefined
+  );
+
   const cartVM = useCartViewModel(showToast);
   const wishlistVM = useWishlistViewModel(showToast);
   const orderVM = useOrderTrackingViewModel();
   const policyVM = usePolicyViewModel();
+
+  // Action Interceptors for Auth
+  const handleNavigate = (page: PageView, searchParam?: string) => {
+    if (page === 'track-order' && !authVM.isAuthenticated) {
+      setIsAuthModalOpen(true);
+      showToast('Please sign in to track your orders.');
+      return;
+    }
+    themeVM.navigateTo(page, searchParam);
+  };
+
+  const handleAddToCart = (product: any, quantity: number = 1) => {
+    if (!authVM.isAuthenticated) {
+      setIsAuthModalOpen(true);
+      showToast('Please sign in to add items to cart.');
+      return;
+    }
+    cartVM.addToCart(product, quantity);
+  };
+
+  const handleToggleWishlist = (product: any) => {
+    if (!authVM.isAuthenticated) {
+      setIsAuthModalOpen(true);
+      showToast('Please sign in to save items to your wishlist.');
+      return;
+    }
+    wishlistVM.toggleWishlist(product);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-primary)' }}>
       
       {/* 1. Global Header with Centered Platform Brand Logo */}
       <Header
-        onNavigateHome={() => themeVM.navigateTo('home')}
+        onNavigateHome={() => handleNavigate('home')}
       />
 
       {/* 2. Global Sticky Navbar with Category Search & Zenith Logo */}
       <Navbar
         activePage={themeVM.activePage}
-        onNavigate={themeVM.navigateTo}
+        onNavigate={handleNavigate}
         cartCount={cartVM.summary.itemCount}
         wishlistCount={wishlistVM.wishlistCount}
         onOpenCart={() => cartVM.setIsCartOpen(true)}
         onOpenWishlist={() => wishlistVM.setIsWishlistOpen(true)}
         onSelectProductQuickView={product => shopVM.setQuickViewProduct(product)}
+        isAuthenticated={authVM.isAuthenticated}
+        user={authVM.user}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onLogout={() => authVM.logout()}
       />
 
-      {/* 3. Active Page View Container with Full-Width Spread & Side Border Lines */}
+      {/* 3. Active Page View Container */}
       <main className="main-content-layout" style={{ flex: 1 }}>
         {themeVM.activePage === 'home' && (
           <HomePage
@@ -67,6 +121,11 @@ export const MainLayout: React.FC = () => {
             onClaimDeal={deal => {
               const matchedProduct = homeVM.exclusiveProducts.find(p => p.id === deal.productId);
               if (matchedProduct) {
+                if (!authVM.isAuthenticated) {
+                  setIsAuthModalOpen(true);
+                  showToast('Please sign in to claim this deal.');
+                  return;
+                }
                 cartVM.addToCart(matchedProduct, 1);
                 cartVM.setIsCartOpen(true);
               }
@@ -74,11 +133,13 @@ export const MainLayout: React.FC = () => {
             qualities={homeVM.qualities}
             sponsors={homeVM.sponsors}
             exclusiveProducts={homeVM.exclusiveProducts}
-            onNavigate={themeVM.navigateTo}
+            onNavigate={handleNavigate}
             isInWishlist={wishlistVM.isInWishlist}
-            onToggleWishlist={wishlistVM.toggleWishlist}
-            onAddToCart={cartVM.addToCart}
+            onToggleWishlist={handleToggleWishlist}
+            onAddToCart={handleAddToCart}
             onQuickView={shopVM.setQuickViewProduct}
+            isProductSelectedForCompare={aiCompareVM.isProductSelected}
+            onToggleCompare={aiCompareVM.toggleSelectProduct}
           />
         )}
 
@@ -101,8 +162,24 @@ export const MainLayout: React.FC = () => {
             quickViewProduct={shopVM.quickViewProduct}
             onSetQuickViewProduct={shopVM.setQuickViewProduct}
             isInWishlist={wishlistVM.isInWishlist}
-            onToggleWishlist={wishlistVM.toggleWishlist}
-            onAddToCart={cartVM.addToCart}
+            onToggleWishlist={handleToggleWishlist}
+            onAddToCart={handleAddToCart}
+            // AI Search
+            aiNlQuery={aiSearchVM.nlQuery}
+            onAiNlQueryChange={aiSearchVM.setNlQuery}
+            onExecuteAiSearch={aiSearchVM.executeAISearch}
+            onClearAiSearch={aiSearchVM.clearAISearch}
+            isAiSearching={aiSearchVM.isSearching}
+            aiRequirements={aiSearchVM.structuredRequirements}
+            isAiSearchActive={aiSearchVM.isAiSearchActive}
+            aiErrorMsg={aiSearchVM.errorMsg}
+            // AI Compare
+            isProductSelectedForCompare={aiCompareVM.isProductSelected}
+            onToggleCompare={aiCompareVM.toggleSelectProduct}
+            // AI Review Summary
+            aiReviewSummary={aiReviewVM.activeSummary}
+            isAiReviewLoading={aiReviewVM.isLoading}
+            onFetchAIReview={aiReviewVM.fetchReviewSummary}
           />
         )}
 
@@ -133,10 +210,10 @@ export const MainLayout: React.FC = () => {
         )}
       </main>
 
-      {/* 4. Global Footer with Executive Dark Theme */}
-      <Footer onNavigate={themeVM.navigateTo} />
+      {/* 4. Global Footer */}
+      <Footer onNavigate={handleNavigate} />
 
-      {/* 5. Drawers & Toasts */}
+      {/* 5. Drawers, Modals & Floating Widgets */}
       <CartDrawer
         isOpen={cartVM.isCartOpen}
         onClose={() => cartVM.setIsCartOpen(false)}
@@ -147,7 +224,14 @@ export const MainLayout: React.FC = () => {
         promoCode={cartVM.promoCode}
         onPromoCodeChange={cartVM.setPromoCode}
         onApplyPromo={cartVM.applyPromoCode}
-        onCheckout={cartVM.processCheckout}
+        onCheckout={() => {
+          if (!authVM.isAuthenticated) {
+            setIsAuthModalOpen(true);
+            showToast('Please sign in to proceed to checkout.');
+            return;
+          }
+          cartVM.processCheckout();
+        }}
         isCheckoutOpen={cartVM.isCheckoutModalOpen}
         onCloseCheckout={() => cartVM.setIsCheckoutModalOpen(false)}
         checkoutSuccess={cartVM.checkoutSuccess}
@@ -158,8 +242,30 @@ export const MainLayout: React.FC = () => {
         isOpen={wishlistVM.isWishlistOpen}
         onClose={() => wishlistVM.setIsWishlistOpen(false)}
         wishlistItems={wishlistVM.wishlistItems}
-        onToggleWishlist={wishlistVM.toggleWishlist}
-        onAddToCart={cartVM.addToCart}
+        onToggleWishlist={handleToggleWishlist}
+        onAddToCart={handleAddToCart}
+      />
+
+      <CompareFloatingBar
+        selectedProducts={aiCompareVM.selectedProducts}
+        onRemove={aiCompareVM.removeProduct}
+        onClear={aiCompareVM.clearSelected}
+        onCompare={aiCompareVM.generateComparison}
+      />
+
+      <AICompareModal
+        isOpen={aiCompareVM.isCompareModalOpen}
+        onClose={() => aiCompareVM.setIsCompareModalOpen(false)}
+        products={aiCompareVM.selectedProducts}
+        result={aiCompareVM.comparisonResult}
+        isLoading={aiCompareVM.isGeneratingComparison}
+        onAddToCart={handleAddToCart}
+      />
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        authVM={authVM} 
       />
 
       <NotificationToast message={toastMessage} onClear={() => setToastMessage(null)} />

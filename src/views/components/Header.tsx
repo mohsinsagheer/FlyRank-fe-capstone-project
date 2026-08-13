@@ -22,11 +22,11 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
             <div
+              className="animate-logo-badge"
               style={{
                 width: '46px',
                 height: '46px',
                 borderRadius: '12px',
-                background: 'var(--brand-gradient)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -39,14 +39,12 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
               M
             </div>
             <span
+              className="animate-logo-shimmer"
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '2.25rem',
                 fontWeight: 900,
-                letterSpacing: '0.08em',
-                background: 'var(--brand-gradient)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                letterSpacing: '0.08em'
               }}
             >
               MOHSIN

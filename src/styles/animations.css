@@ -91,3 +91,60 @@
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes logoShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-logo-shimmer {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 25%, #ec4899 50%, #8b5cf6 75%, #2563eb 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: logoShimmer 6s ease infinite;
+}
+
+.animate-logo-badge {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 30%, #ec4899 70%, #8b5cf6 100%);
+  background-size: 300% 300%;
+  animation: logoShimmer 6s ease infinite;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.animate-logo-badge:hover {
+  transform: scale(1.08) rotate(-3deg);
+}

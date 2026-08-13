@@ -1,3 +1,5 @@
+import type { ProductReview } from './AI';
+
 export type ProductCategory = 
   | 'all'
   | 'electronics'
@@ -29,6 +31,7 @@ export interface Product {
   brand: string;
   discountPercentage: number;
   badge?: string;
+  reviews?: ProductReview[];
 }
 
 export interface ExclusiveDeal {

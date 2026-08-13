@@ -4,7 +4,7 @@ import type { Product, ProductCategory } from '../models/Product';
 
 export type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'rating';
 
-export function useShopViewModel(initialSearchTerm: string = '') {
+export function useShopViewModel(initialSearchTerm: string = '', aiMatchedProductIds?: string[]) {
   const [products] = useState<Product[]>(MOCK_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>('all');
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
@@ -26,6 +26,11 @@ export function useShopViewModel(initialSearchTerm: string = '') {
   const filteredProducts = useMemo(() => {
     return products
       .filter(p => {
+        // AI Matched products filter if active
+        if (aiMatchedProductIds && aiMatchedProductIds.length > 0) {
+          if (!aiMatchedProductIds.includes(p.id)) return false;
+        }
+
         // Category filter
         if (selectedCategory !== 'all' && p.category !== selectedCategory) {
           return false;
@@ -61,7 +66,7 @@ export function useShopViewModel(initialSearchTerm: string = '') {
         if (sortBy === 'rating') return b.rating.rate - a.rating.rate;
         return (b.isExclusive ? 1 : 0) - (a.isExclusive ? 1 : 0);
       });
-  }, [products, selectedCategory, searchTerm, priceRange, minRating, sortBy]);
+  }, [products, selectedCategory, searchTerm, priceRange, minRating, sortBy, aiMatchedProductIds]);
 
   const clearFilters = () => {
     setSelectedCategory('all');
@@ -72,6 +77,7 @@ export function useShopViewModel(initialSearchTerm: string = '') {
   };
 
   return {
+    products,
     categories,
     selectedCategory,
     setSelectedCategory,

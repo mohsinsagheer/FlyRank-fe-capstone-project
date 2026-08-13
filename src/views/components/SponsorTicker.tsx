@@ -1,20 +1,37 @@
 import React from 'react';
-import type { SponsorBrand } from '../../models/Sponsor';
-import { Zap } from 'lucide-react';
+import adidas from '../../assets/brands/adidas.png';
+import apple from '../../assets/brands/apple.png';
+import dyson from '../../assets/brands/dyson.png';
+import nike from '../../assets/brands/nike.png';
+import philips from '../../assets/brands/philips.png';
+import razer from '../../assets/brands/razer.png';
+import samsung from '../../assets/brands/samsung.png';
+import sony from '../../assets/brands/sony.png';
 
 interface SponsorTickerProps {
-  sponsors: SponsorBrand[];
+  sponsors?: any; // Kept to avoid breaking parent component prop passing
 }
 
-export const SponsorTicker: React.FC<SponsorTickerProps> = ({ sponsors }) => {
+const brandLogos = [
+  { name: 'Adidas', src: adidas },
+  { name: 'Apple', src: apple },
+  { name: 'Dyson', src: dyson },
+  { name: 'Nike', src: nike },
+  { name: 'Philips', src: philips },
+  { name: 'Razer', src: razer },
+  { name: 'Samsung', src: samsung },
+  { name: 'Sony', src: sony },
+];
+
+export const SponsorTicker: React.FC<SponsorTickerProps> = () => {
   // Duplicate array to ensure seamless infinite looping animation marquee
-  const tickerItems = [...sponsors, ...sponsors];
+  const tickerItems = [...brandLogos, ...brandLogos];
 
   return (
     <div style={{ margin: '2.25rem 0', overflow: 'hidden' }}>
       <div
         style={{
-          padding: '1.15rem 0',
+          padding: '1.5rem 0',
           overflow: 'hidden',
           borderRadius: 'var(--radius-md)',
           position: 'relative',
@@ -30,28 +47,26 @@ export const SponsorTicker: React.FC<SponsorTickerProps> = ({ sponsors }) => {
         <div className="animate-marquee" style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
           {tickerItems.map((brand, idx) => (
             <div
-              key={`${brand.id}-${idx}`}
+              key={`${brand.name}-${idx}`}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.5rem 1.25rem',
-                borderRadius: 'var(--radius-sm)',
-                background: '#f8fafc',
-                border: '1px solid #cbd5e1',
-                boxShadow: '0 1px 4px rgba(37, 99, 235, 0.06)',
-                minWidth: '175px',
                 justifyContent: 'center',
+                padding: '0.10rem',
+                borderRadius: 'var(--radius-sm)',
+                background: '#ffffffff',
+                border: '1px solid #ffffffff',
+                boxShadow: '0 1px 4px #ffffffff',
+                width: '200px',
+                height: '120px',
                 flexShrink: 0
               }}
             >
-              <Zap size={16} color="var(--brand-primary)" />
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontWeight: 900, fontSize: '0.9rem', letterSpacing: '0.04em', color: '#0f172a' }}>
-                  {brand.name}
-                </div>
-                <div style={{ fontSize: '0.725rem', color: '#64748b' }}>{brand.category}</div>
-              </div>
+              <img
+                src={brand.src}
+                alt={brand.name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
             </div>
           ))}
         </div>

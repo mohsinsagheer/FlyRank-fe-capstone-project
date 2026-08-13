@@ -36,7 +36,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
           overflow: 'hidden',
           position: 'relative',
           border: '1px solid var(--border-color-light)',
-          background: 'linear-gradient(135deg, rgba(18, 24, 36, 0.95) 0%, rgba(30, 41, 62, 0.85) 100%)',
+          background: 'linear-gradient(135deg, rgba(74, 25, 105, 0.95) 0%, rgba(25, 51, 97, 0.85) 100%)',
           boxShadow: 'var(--shadow-lg)'
         }}
       >
@@ -48,10 +48,10 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             alignItems: 'center'
           }}
         >
-          
+
           {/* Left Column: Half Width Deal Details */}
           <div style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', zIndex: 2 }}>
-            
+
             {/* Top Deal Badge & Timer */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               <span className="badge badge-exclusive" style={{ fontSize: '0.8rem', padding: '0.35rem 0.8rem' }}>
@@ -197,7 +197,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               >
                 <ChevronLeft size={18} />
               </button>
-              
+
               <button
                 onClick={onTogglePlay}
                 style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex' }}

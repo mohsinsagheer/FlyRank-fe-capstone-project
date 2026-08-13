@@ -1,32 +1,74 @@
-# React + TypeScript + Vite
+# Zenith E-Commerce Platform (AI-Enhanced Capstone)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A production-ready, highly polished e-commerce platform built with **React 19**, **TypeScript**, **Vite 8**, and powered by **Anthropic Claude AI (3.5 Sonnet / 3.6)** via a secure Node.js Express server.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🌟 Key AI Features
 
-## React Compiler
+1. **Natural-Language Shopping Search:** Converts freeform shopping prompts (e.g. *"Gaming laptop with high refresh rate under $2200"*) into structured requirement JSON (`category`, `maxPrice`, `keyFeatures`, `reasoning`) to match real products with AI explanation tags.
+2. **Multi-Product AI Comparison:** Compare 2 to 4 selected products side-by-side. Generates technical specification matrix tables, pros/cons breakdown, target buyer suitability, and a top recommendation verdict.
+3. **AI Review Summaries:** Synthesizes customer feedback into sentiment scores (0-100%), top strengths, minor drawbacks, and purchase advice inside Quick View.
+4. **100% Offline Resilience & Fallback Algorithms:** All core features (catalog browsing, manual filters, shopping cart, checkout, order tracking) operate seamlessly without AI or when offline.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the Oxlint configuration
+## 🏗️ Architecture & Stack
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- **Framework:** React 19 + TypeScript + Vite 8
+- **Backend API Proxy:** Node.js Express + `@anthropic-ai/sdk` + Zod
+- **Architecture Pattern:** MVVM (Model-View-ViewModel via custom React hooks)
+- **Styling:** Pure Vanilla CSS with Design Tokens (`src/styles/`)
+- **Testing:** Vitest + React Testing Library + `jsdom`
+- **Linting:** Oxlint
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+---
+
+## 🚀 Quick Start Guide
+
+### 1. Environment Setup
+Create a `.env` file in the root directory:
+```env
+PORT=3001
+CLAUDE_API_KEY=sk-ant-api03-xxxx...
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### 2. Run Backend Proxy Server
+In a terminal window, start the Express AI proxy server:
+```bash
+npm run server
+```
+
+### 3. Run Frontend Development Server
+In another terminal window, start the Vite client:
+```bash
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## 🧪 Testing & Code Quality
+
+```bash
+# Run unit and component test suite
+npm test
+
+# Run code linter
+npm run lint
+
+# Type check and build production bundle
+npm run build
+```
+
+---
+
+## 📁 Documentation Suite
+
+Detailed technical documentation is available in the `docs/` folder:
+- [Architecture & MVVM Pattern](file:///c:/Users/mohsi/OneDrive%20-%20Higher%20Education%20Commission/Desktop/FlyRank%20instenship/FlyRank-internship-capstone/docs/ARCHITECTURE.md)
+- [AI Integration & Safety](file:///c:/Users/mohsi/OneDrive%20-%20Higher%20Education%20Commission/Desktop/FlyRank%20instenship/FlyRank-internship-capstone/docs/AI_INTEGRATION.md)
+- [Testing Strategy](file:///c:/Users/mohsi/OneDrive%20-%20Higher%20Education%20Commission/Desktop/FlyRank%20instenship/FlyRank-internship-capstone/docs/TESTING.md)
+- [WCAG 2.1 AA Accessibility](file:///c:/Users/mohsi/OneDrive%20-%20Higher%20Education%20Commission/Desktop/FlyRank%20instenship/FlyRank-internship-capstone/docs/ACCESSIBILITY.md)
+- [Deployment & Security](file:///c:/Users/mohsi/OneDrive%20-%20Higher%20Education%20Commission/Desktop/FlyRank%20instenship/FlyRank-internship-capstone/docs/DEPLOYMENT_SECURITY.md)
+- [Reflection & Lessons Learned](file:///c:/Users/mohsi/OneDrive%20-%20Higher%20Education%20Commission/Desktop/FlyRank%20instenship/FlyRank-internship-capstone/docs/REFLECTION.md)

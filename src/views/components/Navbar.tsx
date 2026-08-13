@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { PageView } from '../../viewmodels/useThemeViewModel';
 import { SearchDropdown } from './SearchDropdown';
 import type { Product, ProductCategory } from '../../models/Product';
-import { Home, ShoppingBag, Truck, ShieldCheck, Heart, ShoppingCart, Search, Menu, X } from 'lucide-react';
+import { Home, ShoppingBag, Truck, ShieldCheck, Heart, ShoppingCart, Search, Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 
 interface NavbarProps {
   activePage: PageView;
@@ -12,6 +12,10 @@ interface NavbarProps {
   onOpenCart: () => void;
   onOpenWishlist: () => void;
   onSelectProductQuickView?: (product: Product) => void;
+  isAuthenticated: boolean;
+  user: any;
+  onOpenAuth: () => void;
+  onLogout: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -21,7 +25,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   wishlistCount,
   onOpenCart,
   onOpenWishlist,
-  onSelectProductQuickView
+  onSelectProductQuickView,
+  isAuthenticated,
+  user,
+  onOpenAuth,
+  onLogout
 }) => {
   const [navSearch, setNavSearch] = useState('');
   const [selectedCatFilter, setSelectedCatFilter] = useState<ProductCategory>('all');
@@ -96,26 +104,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Center: Search Bar */}
-        <div className="nav-search-container" style={{ position: 'relative', flex: 1, maxWidth: '440px', minWidth: '220px' }}>
+        <div className="nav-search-container" style={{ position: 'relative', flex: 1, maxWidth: '500px', minWidth: '220px' }}>
           <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
+            <div className="search-wrapper">
               
               {/* Category Selector Dropdown */}
               <select
                 value={selectedCatFilter}
                 onChange={e => setSelectedCatFilter(e.target.value as ProductCategory)}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  color: '#ffffff',
-                  border: '1px solid var(--nav-border)',
-                  borderRight: 'none',
-                  borderRadius: 'var(--radius-sm) 0 0 var(--radius-sm)',
-                  padding: '0.55rem 0.5rem',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  outline: 'none',
-                  cursor: 'pointer'
-                }}
+                className="search-category"
               >
                 <option value="all" style={{ color: '#000' }}>All</option>
                 <option value="electronics" style={{ color: '#000' }}>Electronics</option>
@@ -136,37 +133,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setIsDropdownOpen(true);
                 }}
                 onFocus={() => setIsDropdownOpen(true)}
-                style={{
-                  width: '100%',
-                  background: 'rgba(255, 255, 255, 0.12)',
-                  color: '#ffffff',
-                  border: '1px solid var(--nav-border)',
-                  borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
-                  padding: '0.55rem 2.4rem 0.55rem 0.75rem',
-                  fontSize: '0.85rem',
-                  outline: 'none'
-                }}
+                className="search-input"
               />
 
               <button
                 type="submit"
-                style={{
-                  position: 'absolute',
-                  right: '6px',
-                  background: 'var(--brand-primary)',
-                  border: 'none',
-                  borderRadius: '4px',
-                  color: 'white',
-                  width: '28px',
-                  height: '28px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
+                className="search-btn"
                 title="Search"
               >
-                <Search size={14} />
+                <Search size={16} />
               </button>
             </div>
           </form>
@@ -186,6 +161,47 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Action Buttons: Wishlist & Cart (Cart Icon Only) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          
+          {/* Auth Button */}
+          {isAuthenticated ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.1)', padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--nav-border)' }}>
+              <UserIcon size={16} color="white" />
+              <span className="nav-btn-text" style={{ color: 'white', fontSize: '0.85rem', fontWeight: 600 }}>
+                {user?.name?.split(' ')[0]}
+              </span>
+              <button onClick={onLogout} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer', display: 'flex', alignItems: 'center', marginLeft: '0.25rem', padding: 0 }} title="Log out" onMouseEnter={e => e.currentTarget.style.color = '#ef4444'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}>
+                <LogOut size={14} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onOpenAuth}
+              style={{
+                background: 'rgba(99, 102, 241, 0.15)',
+                border: '1px solid var(--brand-primary)',
+                color: 'white',
+                borderRadius: 'var(--radius-sm)',
+                padding: '0.55rem 0.85rem',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'var(--brand-primary)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.15)';
+              }}
+            >
+              <UserIcon size={16} />
+              <span className="nav-btn-text">Sign In</span>
+            </button>
+          )}
+
           <button
             onClick={onOpenWishlist}
             style={{
@@ -309,6 +325,75 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Responsive Styles for Navbar */}
       <style>{`
+        .search-wrapper {
+          position: relative;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 2rem;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .search-wrapper:focus-within {
+          background: rgba(255, 255, 255, 0.12);
+          border-color: var(--brand-primary);
+          box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        .search-category {
+          background: transparent;
+          color: #ffffff;
+          border: none;
+          border-right: 1px solid rgba(255, 255, 255, 0.15);
+          padding: 0.6rem 0.5rem 0.6rem 1.2rem;
+          font-size: 0.8rem;
+          font-weight: 600;
+          outline: none;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          border-radius: 2rem 0 0 2rem;
+          appearance: none;
+        }
+        .search-category:hover {
+          background: rgba(255, 255, 255, 0.05);
+        }
+        .search-input {
+          flex: 1;
+          width: 100%;
+          background: transparent;
+          color: #ffffff;
+          border: none;
+          padding: 0.6rem 3rem 0.6rem 1rem;
+          font-size: 0.9rem;
+          outline: none;
+          border-radius: 0 2rem 2rem 0;
+        }
+        .search-input::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+        .search-btn {
+          position: absolute;
+          right: 6px;
+          background: var(--brand-gradient);
+          border: none;
+          border-radius: 50%;
+          color: white;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+        }
+        .search-btn:hover {
+          transform: scale(1.08);
+          box-shadow: var(--shadow-glow);
+        }
+        .search-btn:active {
+          transform: scale(0.95);
+        }
+
         @media (max-width: 900px) {
           .nav-links-desktop {
             display: none !important;

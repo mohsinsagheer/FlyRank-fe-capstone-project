@@ -26,6 +26,8 @@ interface HomePageProps {
   onToggleWishlist: (p: Product) => void;
   onAddToCart: (p: Product) => void;
   onQuickView: (p: Product) => void;
+  isProductSelectedForCompare?: (id: string) => boolean;
+  onToggleCompare?: (p: Product) => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
@@ -45,7 +47,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   isInWishlist,
   onToggleWishlist,
   onAddToCart,
-  onQuickView
+  onQuickView,
+  isProductSelectedForCompare,
+  onToggleCompare
 }) => {
   return (
     <div className="homepage-container animate-fade-in">
@@ -98,6 +102,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                 onToggleWishlist={onToggleWishlist}
                 onAddToCart={onAddToCart}
                 onQuickView={onQuickView}
+                isCompared={isProductSelectedForCompare ? isProductSelectedForCompare(product.id) : false}
+                onToggleCompare={onToggleCompare}
               />
             ))}
           </div>
